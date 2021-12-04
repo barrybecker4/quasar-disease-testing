@@ -8,7 +8,7 @@
     </disease-simulation>
 
 
-    <q-card class="card-md">
+    <!--q-card class="card-md">
       <q-card-section class="bg-blue">
         Title
       </q-card-section>
@@ -18,9 +18,9 @@
       <q-card-section>
         Body 2
       </q-card-section>
-    </q-card>
-  </q-page>
+    </q-card-->
 
+  </q-page>
 </template>
 
 <script>

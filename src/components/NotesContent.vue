@@ -1,6 +1,7 @@
 <template>
   <q-card class="card-md" id="notes">
-      <h3>Notes:</h3>
+    <q-card-section class="title">Notes:</q-card-section>
+    <q-card-section>
       <ul>
            <li>p(<span class="diseased">D</span> | <span class="positive">positive</span>)
                means the probability of having the disease given that you have tested positive.
@@ -19,6 +20,7 @@
                and on the right with a <a href="https://en.wikipedia.org/wiki/Venn_diagram">Venn diagram</a>
            </li>
       </ul>
+    </q-card-section>
   </q-card>
 </template>
 
@@ -50,3 +52,14 @@ export default {
   },
 }
 </script>
+
+
+<style scoped>
+  .title {
+      font-weight: bold;
+      color: #333333;
+      border-bottom: 1px solid black;
+  }
+
+</style>
+

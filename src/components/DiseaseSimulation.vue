@@ -1,5 +1,5 @@
 <template>
-  <q-card class="card-md">
+  <div>
       <div class="inputs">
       <span class="input-line">The incidence of the disease in the population is
          <span id="probability-diseased">{{initialPctDiseased}}%</span>
@@ -10,13 +10,13 @@
          </div>
       </div>
       <q-slider v-model="standard" :min="0" :max="50" label/>
-      <q-slider v-model="standard" :min="0" :max="50"  label color="green"/>
+      <q-slider v-model="standard" :min="0" :max="50" label color="green"/>
 
       <bayes-rule-view :graph="this.graph" :totalPopulation="this.totalPopulation"></bayes-rule-view>
       <sankey-view :graph="this.graph" @highlight="onHighlight" @unhighlight="onUnhighlight"></sankey-view>
       <venn-diagram-view :graph="this.graph" :totalPopulation="this.totalPopulation"></venn-diagram-view>
       <notes-content :testPositive="this.testPositive" :totalPopulation="this.totalPopulation"></notes-content>
-  </q-card>
+  </div>
 </template>
 
 <script>
@@ -166,7 +166,7 @@ export default {
           {"source": 1, "target": 3, "value": this.testPositiveButHealthy},
           {"source": 1, "target": 4, "value": this.testNegAndHealthy}
       ];
-      //Vue.set(this.graph, 'links', links); // no longer needed for Vue to recognizes changes in Vue 3
+      this.graph.links = links;
     },
 
     clearThumbTip: function(event, ui) {
