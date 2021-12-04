@@ -1,5 +1,5 @@
 <template>
-  <q-card class="card">
+  <q-card class="card-md">
       <div class="inputs">
       <span class="input-line">The incidence of the disease in the population is
          <span id="probability-diseased">{{initialPctDiseased}}%</span>

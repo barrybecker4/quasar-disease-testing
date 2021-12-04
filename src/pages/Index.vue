@@ -8,7 +8,7 @@
     </disease-simulation>
 
 
-    <q-card class="card">
+    <q-card class="card-md">
       <q-card-section class="bg-blue">
         Title
       </q-card-section>
@@ -44,17 +44,21 @@ export default defineComponent({
 
 <style scoped>
 
-  /* class="col-xs-12 col-sm-6 col-md-4" */
-  .card-sm {
+  /* For mobile */
+  [class*="card-"] {
     font-size: 12px;
     margin: 10px;
     padding: 10px;
   }
-  .card {
-    font-size: 18px;
-    margin: 20px;
-    padding: 20px;
-    box-sizing: border-box;
+
+  @media only screen and (min-width: 768px) {
+    /* For desktop: */
+    .card-md {
+      font-size: 18px;
+      margin: 20px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
   }
 
 </style>

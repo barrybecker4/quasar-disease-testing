@@ -1,5 +1,5 @@
 <template>
-  <q-card class="card">
+  <q-card class="card-md">
      <p>Suppose your doctor tests you for a terrible disease, and the results are
          <span class="positive">positive</span>!
          How worried should you be?
