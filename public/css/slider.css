@@ -1,0 +1,52 @@
+
+.ui-slider-horizontal {
+    margin-top: 2px;
+    height: 10px;
+    width: 420px;
+}
+
+.ui-slider .ui-slider-handle {
+    height: 17px;
+    width: 10px;
+}
+
+.slider {
+    float: right;
+    border: 1px solid #778899;
+}
+
+.tooltip {
+    position: absolute;
+    z-index: 1020;
+    display: block;
+    padding: 0px;
+    font-size: 11px;
+    margin-top: -2px;
+    bottom: 120%;
+    margin-left: -2em;
+    border: 1px solid #aaaaaa;
+}
+
+.tooltip .tooltip-arrow {
+    bottom: -24%;
+    left: 50%;
+    margin-left: -5px;
+    border-top: 5px solid #000000;
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.tooltip-inner {
+    max-width: 200px;
+    padding: 3px 8px;
+    color: #000000;//#ffffff;
+    text-align: center;
+    text-decoration: none;
+    background-color: #ffffff;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
