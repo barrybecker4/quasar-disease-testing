@@ -160,7 +160,7 @@ export default {
                 {"source": 1, "target": 3, "value": this.testPositiveButHealthy},
                 {"source": 1, "target": 4, "value": this.testNegAndHealthy}
             ];
-            //Vue.set(this.graph, 'links', links); // needed so Vue recognizes change  // different in Vue 3?
+            //Vue.set(this.graph, 'links', links); // no longer needed for Vue to recognizes changes in Vue 3
         },
 
         clearThumbTip: function(event, ui) {
