@@ -13,8 +13,8 @@
       <q-slider v-model="standard" :min="0" :max="50"  label color="green"/>
 
       <bayes-rule-view :graph="this.graph" :totalPopulation="this.totalPopulation"></bayes-rule-view>
-      <!--sankey-view :graph="this.graph" @highlight="onHighlight" @unhighlight="onUnhighlight"></sankey-view>
-      <venn-diagram-view :graph="this.graph" :totalPopulation="this.totalPopulation"></venn-diagram-view -->
+      <sankey-view :graph="this.graph" @highlight="onHighlight" @unhighlight="onUnhighlight"></sankey-view>
+      <venn-diagram-view :graph="this.graph" :totalPopulation="this.totalPopulation"></venn-diagram-view>
       <notes-content :testPositive="this.testPositive" :totalPopulation="this.totalPopulation"></notes-content>
   </q-card>
 </template>
@@ -23,14 +23,16 @@
 
 import diseaseConsts from './diseaseConsts.js';
 import BayesRuleView from 'components/BayesRuleView.vue';
+import SankeyView from 'components/SankeyView.vue';
+import VennDiagramView from 'components/VennDiagramView.vue';
 import NotesContent from 'components/NotesContent.vue';
 
 export default {
 
   components: {
       BayesRuleView,
-      //SankeyView,
-      //VennDiagramView,
+      SankeyView,
+      VennDiagramView,
       NotesContent,
   },
 

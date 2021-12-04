@@ -37,7 +37,7 @@ export default {
 
   props: {
     graph: {
-      type: Object, // Object or array defaults must be returned froma factory function
+      type: Object, // Object or array defaults must be returned from a factory function
       default() {
         return {};
       }
