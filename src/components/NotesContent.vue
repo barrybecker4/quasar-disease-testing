@@ -1,5 +1,5 @@
 <template>
-  <div id="notes">
+  <q-card class="card-md" id="notes">
       <h3>Notes:</h3>
       <ul>
            <li>p(<span class="diseased">D</span> | <span class="positive">positive</span>)
@@ -19,14 +19,34 @@
                and on the right with a <a href="https://en.wikipedia.org/wiki/Venn_diagram">Venn diagram</a>
            </li>
       </ul>
-  </div>
+  </q-card>
 </template>
 
 <script>
+
+import diseaseConsts from './diseaseConsts.js'
+
 export default {
   // name: 'ComponentName',
   setup () {
     return {}
-  }
+  },
+
+  props: {
+    testPositive: {
+      type: Number,
+      default: 0,
+    },
+    totalPopulation: {
+      type: Number,
+      default: 1,
+    },
+  },
+
+  computed: {
+     probPositive: function() {
+        return diseaseConsts.format(this.testPositive / this.totalPopulation, 4);
+     }
+  },
 }
 </script>
