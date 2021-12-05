@@ -50,7 +50,7 @@ export default {
     },
     initialTestAccuracy: { // percent of time that the test is correct. In range [90, 99.5]
       type: Number,
-      default: 90,
+      default: 90
     }
   },
 
@@ -111,7 +111,7 @@ export default {
     },
     testAccuracy(value, oldValue) {
       this.updateViews();
-    }
+    },
   },
 
   methods: {

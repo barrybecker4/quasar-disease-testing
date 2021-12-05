@@ -38,10 +38,10 @@ export default {
   },
 
    props: {
-       graph: {
-         type: Object,
-         default() { return {} }
-       },
+     graph: {
+       type: Object,
+       default: () => {}
+     },
    },
 
    mounted() {
@@ -58,12 +58,13 @@ export default {
    },
 
    watch: {
-       graph: {
-           handler(g){
-              this.render();
-           },
-           deep: true
-       }
+       graphLinks(value) { this.render() },
+   },
+
+   computed: {
+     graphLinks: function() {
+       return this.graph.links;
+     }
    },
 
    methods: {
@@ -94,7 +95,6 @@ export default {
                .attr("width", chartWidth)
                .attr("height", chartHeight);
 
-           // Set the sankey diagram properties
            sankey
               .size([width, height])
               .nodes(this.graph.nodes)
@@ -112,12 +112,13 @@ export default {
 
             let linkEnter = links.enter()
                 .append("path")
+                /*
                 .on("mouseover", function(d) {
                     vm.$root.$emit('highlight', getLinkId(d));
                 })
                 .on("mouseout", function(d) {
                     vm.$root.$emit('unhighlight', getLinkId(d));
-                 })
+                 })*/
                 .attr("class", function(d) { return "link " + getLinkId(d); })
                 .style("stroke-opacity", 0.3)
                 .append("title");
