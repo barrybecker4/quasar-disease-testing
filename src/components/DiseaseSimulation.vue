@@ -151,7 +151,6 @@ export default {
 }
 </script>
 
-
 <style scoped>
 
   .inputs {
@@ -165,28 +164,6 @@ export default {
 
   .q-slider--h {
     height: 20px;
-  }
-
-  body {
-    font-family: Calibri, SansSerif, sans-serif;
-    min-width: 900px;
-    margin: 20px;
-  }
-
-  .diseased {
-    font-weight: bold;
-    color: #990000;
-  }
-
-  .healthy {
-    font-weight: bold;
-    color: #009900;
-  }
-
-  /* if this changes significantly, also update in disease.js. This version should be a little darker */
-  .positive {
-    font-weight: bold;
-    color: #cc9900;
   }
 
   #bayes-rule-view {
@@ -207,6 +184,30 @@ export default {
   #notes {
     float: left;
     width: 100%;
+  }
+</style>
+
+<style>
+  body {
+    font-family: Calibri, SansSerif, sans-serif;
+    min-width: 900px;
+    margin: 20px;
+  }
+
+  .diseased {
+    font-weight: bold;
+    color: #990000;
+  }
+
+  .healthy {
+    font-weight: bold;
+    color: #009900;
+  }
+
+  /* if this changes significantly, also update in disease.js. This version should be a little darker */
+  .positive {
+    font-weight: bold;
+    color: #cc9900;
   }
 
   .big {
