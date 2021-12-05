@@ -1,22 +1,21 @@
 <template>
-  <div>
+  <q-card class="card-md">
       <div class="inputs">
-      <span class="input-line">The incidence of the disease in the population is
-         <span id="probability-diseased">{{initialPctDiseased}}%</span>
-         <span id="probability-diseased-slider" class="slider"></span>
-      </span>
-         <div class="input-line">The disease testing accuracy is <span id="test-accuracy">{{initialTestAccuracy}}%</span>
-             <div id="test-accuracy-slider" class="slider"></div>
-         </div>
+        <span class="input-line">The incidence of the disease in the population is
+          <span id="probability-diseased">{{probDiseasedLabel}}</span>
+          <q-slider v-model="rawProbDiseased" :min="-2" :max="1" :step="0.1" label :label-value="probDiseasedLabel" />
+        </span>
+        <div class="input-line">The disease testing accuracy is
+           <span id="test-accuracy">{{testAccuracyLabel}}</span>
+           <q-slider v-model="rawTestAccuracy" :min="800" :max="999" label :label-value="testAccuracyLabel" />
+        </div>
       </div>
-      <q-slider v-model="standard" :min="0" :max="50" label/>
-      <q-slider v-model="standard" :min="0" :max="50" label color="green"/>
 
       <bayes-rule-view :graph="this.graph" :totalPopulation="this.totalPopulation"></bayes-rule-view>
       <sankey-view :graph="this.graph" @highlight="onHighlight" @unhighlight="onUnhighlight"></sankey-view>
       <venn-diagram-view :graph="this.graph" :totalPopulation="this.totalPopulation"></venn-diagram-view>
       <notes-content :testPositive="this.testPositive" :totalPopulation="this.totalPopulation"></notes-content>
-  </div>
+  </q-card>
 </template>
 
 <script>
@@ -61,23 +60,35 @@ export default {
          nodes: diseaseConsts.NODES,
          links: [0, 0, 0],
        },
-       probDiseased: this.initialPctDiseased,
-       testAccuracy: this.initialTestAccuracy,
+       rawProbDiseased: Math.log10(this.initialPctDiseased),
+       rawTestAccuracy: this.initialTestAccuracy * 10,
      }
   },
 
   computed: {
+     probDiseased: function() {
+       return this.pctDiseasedConverter(this.rawProbDiseased);
+     },
+     probDiseasedLabel: function() {
+       return diseaseConsts.format(this.probDiseased, 2) + '%';
+     },
+     testAccuracy: function() {
+       return this.testAccuracyConverter(this.rawTestAccuracy);
+     },
+     testAccuracyLabel: function() {
+       return this.testAccuracy + '%';
+     },
      diseasedPop: function() {
-         return this.probDiseased * this.totalPopulation;
+         return this.probDiseased * this.totalPopulation / 100.0;
      },
      healthyPop: function() {
          return this.totalPopulation - this.diseasedPop;
      },
      testNegAndHealthy: function() {
-         return this.testAccuracy * this.healthyPop;
+         return this.testAccuracy * this.healthyPop / 100.0;
      },
      testNegButDiseased: function() {
-         return (1.0 - this.testAccuracy) * this.diseasedPop;
+         return (1.0 - this.testAccuracy / 100.0) * this.diseasedPop;
      },
      testPositiveAndDiseased: function() {
          return this.diseasedPop - this.testNegButDiseased;
@@ -94,72 +105,29 @@ export default {
     this.init();
   },
 
+  watch: {
+    probDiseased(value, oldValue) {
+      this.updateViews();
+    },
+    testAccuracy(value, oldValue) {
+      this.updateViews();
+    }
+  },
+
   methods: {
     init: function() {
-      this.initializeInputSection(this.initialPctDiseased, this.initialTestAccuracy);
       this.updateViews();
     },
 
-    /**
-     * Show two sliders that allow changing the incidence and accuracy.
-     */
-    initializeInputSection: function(initialPctDiseased, initialTestAccuracy) {
-      let probDiseasedSlider = $("#probability-diseased-slider");
-      let testAccuracySlider = $("#test-accuracy-slider");
-
-      // Using integer values to avoid rounding problems at the max value
-      probDiseasedSlider.slider({
-          value: Math.log10(initialPctDiseased),
-          min: -2,
-          max: 1.0,
-          step: 0.1,
-          height: "10px",
-          slide: this.getSliderChangedHandler("#probability-diseased", this.pctDiseasedConverter),
-          stop: this.clearThumbTip
-      });
-
-      testAccuracySlider.slider({
-          value: initialTestAccuracy * 10,
-          min: 800,
-          max: 999,
-          step: 1,
-          slide: this.getSliderChangedHandler("#test-accuracy", this.testAccuracyConverter),
-          stop: this.clearThumbTip
-      });
-    },
-
     pctDiseasedConverter: function(sliderValue) {
-      return diseaseConsts.format(Math.pow(10, sliderValue), 2) + "%";
+      return Math.pow(10, sliderValue);
     },
 
     testAccuracyConverter: function(sliderValue) {
-      return sliderValue / 10 + "%";
-    },
-
-    /**
-     * @param sliderEl jquery selector for slider
-     * @param convert function used to map slider value to actual value
-     * @returns {Function} slider changed callback
-     */
-    getSliderChangedHandler: function(sliderEl, convert) {
-      let vm = this;
-      return function (event, ui) {
-        // update value in text
-        var value = convert(ui.value);
-        $(sliderEl).text(value);
-
-        // current value (when sliding) or initial value (at start)
-        var tooltip = '<div class="tooltip"><div class="tooltip-inner">' + value
-            + '</div><div class="tooltip-arrow"></div></div>';
-        $(sliderEl + "-slider").find('.ui-slider-handle').html(tooltip);
-        vm.updateViews();
-      }
+      return sliderValue / 10;
     },
 
     updateViews: function() {
-      this.probDiseased = parseFloat($("#probability-diseased").text()) / 100.0;
-      this.testAccuracy = parseFloat($("#test-accuracy").text()) / 100.0;
-
       let links = [
           {"source": 0, "target": 2, "value": this.testNegButDiseased},
           {"source": 0, "target": 3, "value": this.testPositiveAndDiseased},
@@ -167,11 +135,6 @@ export default {
           {"source": 1, "target": 4, "value": this.testNegAndHealthy}
       ];
       this.graph.links = links;
-    },
-
-    clearThumbTip: function(event, ui) {
-      $("#probability-diseased-slider").find('.ui-slider-handle').empty();
-      $("#test-accuracy-slider").find('.ui-slider-handle').empty();
     },
 
     onHighlight(value) {
