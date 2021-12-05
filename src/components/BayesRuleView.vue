@@ -115,4 +115,41 @@ export default {
 </script>
 
 
+<style scoped>
+
+  table.bayes-rule-exp {
+    padding: 15px;
+  }
+
+  td.upper_line {
+    border-top:solid 1px black;
+    margin: 2px;
+    text-align: center;
+  }
+
+  td.numerator {
+    white-space: nowrap;
+    padding: 3px;
+  }
+
+  table.fraction {
+    text-align: center;
+    vertical-align: middle;
+     margin-top:0.5em;
+     margin-bottom:0.5em;
+     line-height: 2em;
+  }
+
+  .prob-diseased-result {
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .prob-diseased-worry {
+    font-size: 24px;
+    padding: 6px;
+    font-style: italic;
+  }
+
+</style>
 

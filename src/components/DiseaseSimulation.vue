@@ -3,11 +3,15 @@
       <div class="inputs">
         <span class="input-line">The incidence of the disease in the population is
           <span id="probability-diseased">{{probDiseasedLabel}}</span>
-          <q-slider v-model="rawProbDiseased" :min="-2" :max="1" :step="0.1" label :label-value="probDiseasedLabel" />
+          <span class="slider">
+            <q-slider v-model="rawProbDiseased" :min="-2" :max="1" :step="0.1" label :label-value="probDiseasedLabel" />
+          </span>
         </span>
         <div class="input-line">The disease testing accuracy is
            <span id="test-accuracy">{{testAccuracyLabel}}</span>
-           <q-slider v-model="rawTestAccuracy" :min="800" :max="999" label :label-value="testAccuracyLabel" />
+           <span class="slider">
+             <q-slider v-model="rawTestAccuracy" :min="800" :max="999" label :label-value="testAccuracyLabel" />
+           </span>
         </div>
       </div>
 
@@ -146,3 +150,70 @@ export default {
   }
 }
 </script>
+
+
+<style scoped>
+
+  .inputs {
+    width: 860px;
+  }
+
+  .slider {
+    float: right;
+    width: 400px;
+  }
+
+  .q-slider--h {
+    height: 20px;
+  }
+
+  body {
+    font-family: Calibri, SansSerif, sans-serif;
+    min-width: 900px;
+    margin: 20px;
+  }
+
+  .diseased {
+    font-weight: bold;
+    color: #990000;
+  }
+
+  .healthy {
+    font-weight: bold;
+    color: #009900;
+  }
+
+  /* if this changes significantly, also update in disease.js. This version should be a little darker */
+  .positive {
+    font-weight: bold;
+    color: #cc9900;
+  }
+
+  #bayes-rule-view {
+    width: 99%;
+    padding: 10px;
+  }
+  #sankey-view {
+    float: left;
+    width: 50%;
+    height: 650px;
+  }
+  #venn-diagram-view {
+    float: right;
+    width: 50%;
+    height: 650px;
+  }
+
+  #notes {
+    float: left;
+    width: 100%;
+  }
+
+  .big {
+    font-size: 24px;
+  }
+
+</style>
+
+
+

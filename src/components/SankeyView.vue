@@ -265,3 +265,21 @@ function makeValid(s) {
 }
 
 </script>
+
+<style>
+
+  .node rect {
+    cursor: move;
+    shape-rendering: crispEdges;
+  }
+
+  .node text {
+    pointer-events: none;
+    text-shadow: 0 1px 0 #fff;
+  }
+
+  .link {
+    fill: none;
+  }
+
+</style>
