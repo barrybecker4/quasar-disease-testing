@@ -34,15 +34,13 @@ let colorScale = d3.scale.ordinal()
 export default {
 
   setup () {
-    return {}
+    return {};
   },
 
    props: {
        graph: {
-         type: Object, // Object or array defaults must be returned from a factory function
-         default() {
-           return {};
-         }
+         type: Object,
+         default() { return {} }
        },
    },
 
@@ -98,10 +96,10 @@ export default {
 
            // Set the sankey diagram properties
            sankey
-               .size([width, height])
-               .nodes(this.graph.nodes)
-               .links(this.graph.links)
-               .layout(0);
+              .size([width, height])
+              .nodes(this.graph.nodes)
+              .links(this.graph.links)
+              .layout(0);
 
            this.addColorGradients();
            this.addLinks();

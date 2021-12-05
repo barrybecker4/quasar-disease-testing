@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page class="column">
     <introduction-content/>
     <disease-simulation
             :total-population="10000000"
