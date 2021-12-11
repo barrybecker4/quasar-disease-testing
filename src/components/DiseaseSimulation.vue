@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import * as d3 from 'd3'
 import diseaseConsts from './diseaseConsts.js';
 import BayesRuleView from 'components/BayesRuleView.vue';
 import SankeyView from 'components/SankeyView.vue';
@@ -132,13 +131,12 @@ export default {
     },
 
     updateViews: function() {
-      let links = [
-          {source: 0, target: 2, value: this.testNegButDiseased},
-          {source: 0, target: 3, value: this.testPositiveAndDiseased},
-          {source: 1, target: 3, value: this.testPositiveButHealthy},
-          {source: 1, target: 4, value: this.testNegAndHealthy}
+      this.graph.links = [
+        {source: 0, target: 2, value: this.testNegButDiseased},
+        {source: 0, target: 3, value: this.testPositiveAndDiseased},
+        {source: 1, target: 3, value: this.testPositiveButHealthy},
+        {source: 1, target: 4, value: this.testNegAndHealthy}
       ];
-      this.graph.links = links;
     },
 
     onHighlight(value) {

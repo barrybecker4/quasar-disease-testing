@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table class="bayes-rule-exp" align="center" cellpadding="0" cellspacing="0">
+    <table class="bayes-rule-exp" style="margin:0; border-collapse: collapse;">
        <tr>
            <td rowspan="2" nowrap="nowrap">
                p(<span class="diseased">D</span> | <span class="positive">positive</span>)&nbsp; = &nbsp;
@@ -10,24 +10,23 @@
            </td>
            <td rowspan="2" nowrap="nowrap"> &nbsp; = &nbsp;</td>
            <td class="numerator"><span class="prob-diseased">
-               {{this.probDiseasedTxt}}</span> * <span class="prob-pos-given-diseased">{{this.probPositiveGivenDiseasedTxt}}</span>
+               {{probDiseasedTxt}}</span> * <span class="prob-pos-given-diseased">{{probPositiveGivenDiseasedTxt}}</span>
            </td>
            <td rowspan="2" nowrap="nowrap"> &nbsp; = &nbsp;</td>
            <td rowspan="2" width="100%">
-               <span class="prob-diseased-result">{{this.probDiseasedGivenPositiveTxt}}&nbsp;</span> chance that you are infected.
-               <span class="prob-diseased-worry" :style='{color: this.worryAttrs.color}'>{{this.worryAttrs.howMuch}}</span>
+               <span class="prob-diseased-result">{{probDiseasedGivenPositiveTxt}}&nbsp;</span> chance that you are infected.
+               <span class="prob-diseased-worry" :style='{color: worryAttrs.color}'>{{worryAttrs.howMuch}}</span>
            </td>
        </tr>
        <tr>
            <td class="upper_line">p(<span class="positive">positive</span>)</td>
-           <td class="upper_line"><span class="prob-positive">{{this.probPositiveTxt}}</span></td>
+           <td class="upper_line"><span class="prob-positive">{{probPositiveTxt}}</span></td>
        </tr>
     </table>
   </div>
 </template>
 
 <script>
-import * as d3 from 'd3'
 import diseaseConsts from './diseaseConsts.js';
 
 export default {

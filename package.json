@@ -1,7 +1,7 @@
 {
   "name": "quasar-disease-testing",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
+  "description": "Disease testing results explained using Bayes' rule",
   "productName": "Disease Testing",
   "author": "Barry Becker <barrybecker4@gmail.com>",
   "private": true,
