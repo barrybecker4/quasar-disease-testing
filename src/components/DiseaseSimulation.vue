@@ -188,8 +188,8 @@ export default {
 <style>
   body {
     font-family: Calibri, SansSerif, sans-serif;
-    min-width: 900px;
-    margin: 20px;
+    min-width: 800px;
+    margin: 0px;
   }
 
   .diseased {

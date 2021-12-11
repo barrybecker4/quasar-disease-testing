@@ -36,13 +36,6 @@ export default {
      mounted() {
          let vm = this;
          this.init();
-         /* diff in Vue3
-         this.$root.$on('highlight', data => {
-             vm.doHighlight(data);
-         });
-         this.$root.$on('unhighlight', data => {
-             vm.doUnhighlight(data);
-         });*/
      },
 
      watch: {
@@ -71,10 +64,10 @@ export default {
                   .attr("fill-opacity", 0.3)
                   .attr("fill", diseaseConsts.TEST_NEG_HEALTHY_COLOR)
                   .on("mouseover", function(d) {
-                      //vm.$root.$emit('highlight', diseaseConsts.HEALTHY_TEST_NEG);
+                    vm.doHighlight(diseaseConsts.HEALTHY_TEST_NEG);
                   })
                   .on("mouseout", function(d) {
-                      //vm.$root.$emit('unhighlight', diseaseConsts.HEALTHY_TEST_NEG);
+                    vm.doUnhighlight(diseaseConsts.HEALTHY_TEST_NEG);
                   })
                   .append("title").text("The whole population of " + this.totalPopulation.toLocaleString() +
                       " people. \nThose outside the red circle are healthy");
@@ -105,10 +98,10 @@ export default {
                   .attr("fill-opacity", 0.4)
                   .attr("fill", "#ffaa00")
                   .on("mouseover", function(d) {
-                      //vm.$root.$emit('highlight', diseaseConsts.DISEASED_TEST_POS);
+                    vm.doHighlight(diseaseConsts.DISEASED_TEST_POS);
                   })
                   .on("mouseout", function(d) {
-                      //vm.$root.$emit('unhighlight', diseaseConsts.DISEASED_TEST_POS);
+                    vm.doUnhighlight(diseaseConsts.DISEASED_TEST_POS);
                   })
                   .append("title");
 
@@ -117,10 +110,10 @@ export default {
                   .attr("fill-opacity", 0.5)
                   .attr("fill", diseaseConsts.TEST_NEG_DISEASED_COLOR)
                   .on("mouseover", function(d) {
-                      //vm.$root.$emit('highlight', diseaseConsts.DISEASED_TEST_NEG);
+                    vm.doHighlight(diseaseConsts.DISEASED_TEST_NEG);
                   })
                   .on("mouseout", function(d) {
-                      //vm.$root.$emit('unhighlight', diseaseConsts.DISEASED_TEST_NEG);
+                    vm.doUnhighlight(diseaseConsts.DISEASED_TEST_NEG);
                   })
                   .append("title");
 
@@ -129,10 +122,10 @@ export default {
                   .attr("fill-opacity", 0.1)
                   .attr("fill", "#55ee00")
                   .on("mouseover", function(d) {
-                      //vm.$root.$emit('highlight', diseaseConsts.HEALTHY_TEST_POS);
+                    vm.doHighlight(diseaseConsts.HEALTHY_TEST_POS);
                   })
                   .on("mouseout", function(d) {
-                      //vm.$root.$emit('unhighlight', diseaseConsts.HEALTHY_TEST_POS);
+                    vm.doUnhighlight(diseaseConsts.HEALTHY_TEST_POS);
                   })
                   .append("title");
 

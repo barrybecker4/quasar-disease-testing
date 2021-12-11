@@ -154,13 +154,15 @@ export default {
               return d3.rgb(d.color).darker(1);
           })
           .on("mouseover", function(d) {
-               d3.select(this).transition("tooltip").duration(DURATION)
-                   .style("fill-opacity", 0.9);
-               })
+             d3.select(this).transition("tooltip").duration(DURATION)
+                 .style("fill-opacity", 0.99)
+                 .style("stroke-width", 2);
+             })
           .on("mouseout", function(d) {
-               d3.select(this).transition("tooltip").duration(DURATION)
-                   .style("fill-opacity", 0.5);
-               })
+             d3.select(this).transition("tooltip").duration(DURATION)
+                 .style("fill-opacity", 0.5)
+               .style("stroke-width", 1);
+             })
           .append("title");
       nodes.select("rect title")
           .text(function (d) {
@@ -169,7 +171,7 @@ export default {
 
       nodes.select("rect")
           .attr("height", function (d) {
-              const ht = d.y1 - d.y0;
+              const ht = Math.abs(d.y1 - d.y0);
               return ht;
           });
 
