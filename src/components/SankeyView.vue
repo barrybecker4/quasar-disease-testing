@@ -16,6 +16,7 @@ let width, height;
 let links;
 let margin = {top: 10, right: 10, bottom: 10, left: 10};
 const DURATION = 300;
+
 let colorScale = d3.scale.ordinal()
     .range([
         diseaseConsts.DISEASED_COLOR,
@@ -46,20 +47,12 @@ export default {
   },
 
   mounted() {
-     let vm = this;
-     this.init();
-
-     /* This has changed in Vue 3
-     this.$root.$on('highlight', data => {
-         vm.doHighlight(data);
-     });
-     this.$root.$on('unhighlight', data => {
-         vm.doUnhighlight(data);
-     });*/
+    //let vm = this;
+    this.init();
   },
 
   watch: {
-     graphLinks(value) { this.render() },
+    graphLinks(value) { this.render() },
   },
 
   computed: {
@@ -111,15 +104,16 @@ export default {
 
       let linkEnter = links.enter()
           .append("path")
-          /*
-          .on("mouseover", function(d) {
-              vm.$root.$emit('highlight', getLinkId(d));
-          })
-          .on("mouseout", function(d) {
-              vm.$root.$emit('unhighlight', getLinkId(d));
-           })*/
           .attr("class", function(d) { return "link " + getLinkId(d); })
           .style("stroke-opacity", 0.3)
+          .on("mouseover", function(d) {
+            d3.select(this).transition("tooltip").duration(DURATION)
+              .style("stroke-opacity", function(d) { return d.target.node == "4" ? 0.45 : 0.7; });
+          })
+          .on("mouseout", function(d) {
+            d3.select(this).transition("tooltip").duration(DURATION)
+              .style("stroke-opacity", 0.3);
+           })
           .append("title");
 
       links
@@ -129,9 +123,6 @@ export default {
           })
           .style("stroke-width", function (d) {
               return Math.max(1, d.width);
-          })
-          .sort(function (a, b) {
-              return b.width - a.width;
           });
 
       // add the link titles
@@ -142,14 +133,8 @@ export default {
           });
     },
 
-    /**
-      * consider foreign object for html styling
-      * <foreignobject x="10" y="10" width="100" height="150">
-      *   <body xmlns="http://www.w3.org/1999/xhtml">
-      *   <div>Here is a <strong>paragraph</strong> that requires <em>word wrap</em></div>
-      *  </body>
-      */
     addNodes: function() {
+      console.log("rendinger nodes " + this.graph.nodes);
       let nodes = nodesEl.selectAll(".node").data(this.graph.nodes);
       let nodeEnter = nodes.enter();
 
@@ -184,7 +169,8 @@ export default {
 
       nodes.select("rect")
           .attr("height", function (d) {
-              return d.y1 - d.y0; //d.dy;  width?
+              const ht = d.y1 - d.y0;
+              return ht;
           });
 
       // add in the title for the nodes
@@ -204,7 +190,7 @@ export default {
 
       nodes.select("text")
           .attr("y", function (d) {
-              return (d.y1 - d.y0) / 2;   // d.dy / 2;  width/2
+              return (d.y1 - d.y0) / 2;
           });
     },
 
@@ -230,17 +216,6 @@ export default {
           .attr("stop-color", function (d) {
               return nodeColor((+d.source.x0 > +d.target.x0) ? d.source : d.target)
           });
-    },
-
-    doHighlight: function(id) {
-         d3.select("#sankey-view ." + id).transition().duration(DURATION)
-             // opacity change is less for large area
-             .style("stroke-opacity", function(d) { return d.target.node == "4" ? 0.45 : 0.7; });
-         ;
-    },
-    doUnhighlight: function(id) {
-         d3.select("#sankey-view ." + id).transition().duration(DURATION)
-             .style("stroke-opacity", 0.3);
     },
   },
 }
