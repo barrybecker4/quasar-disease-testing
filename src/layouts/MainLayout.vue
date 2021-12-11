@@ -7,7 +7,7 @@
           Disease Testing Visualization
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div class="version">Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
@@ -36,3 +36,14 @@
     }
   })
 </script>
+
+<style scoped>
+
+  .version {
+    font-size: 9px;
+    box-sizing: border-box;
+    padding-bottom: 20px;
+  }
+
+</style>
+

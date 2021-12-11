@@ -1,24 +1,24 @@
 <template>
   <q-card class="card-md">
-      <div class="inputs">
-        <span class="input-line">The incidence of the disease in the population is
-          <span id="probability-diseased">{{probDiseasedLabel}}</span>
-          <span class="slider">
-            <q-slider v-model="rawProbDiseased" :min="-2" :max="1" :step="0.1" label :label-value="probDiseasedLabel" />
-          </span>
+    <div class="inputs">
+      <span class="input-line">The incidence of the disease in the population is
+        <span id="probability-diseased">{{probDiseasedLabel}}</span>
+        <span class="slider">
+          <q-slider v-model="rawProbDiseased" :min="-2" :max="1" :step="0.1" label :label-value="probDiseasedLabel" />
         </span>
-        <div class="input-line">The disease testing accuracy is
-           <span id="test-accuracy">{{testAccuracyLabel}}</span>
-           <span class="slider">
-             <q-slider v-model="rawTestAccuracy" :min="800" :max="999" label :label-value="testAccuracyLabel" />
-           </span>
-        </div>
+      </span>
+      <div class="input-line">The disease testing accuracy is
+         <span id="test-accuracy">{{testAccuracyLabel}}</span>
+         <span class="slider">
+           <q-slider v-model="rawTestAccuracy" :min="800" :max="999" label :label-value="testAccuracyLabel" />
+         </span>
       </div>
-
-      <bayes-rule-view :graph="this.graph" :totalPopulation="this.totalPopulation"></bayes-rule-view>
-      <sankey-view :graph="this.graph" @highlight="onHighlight" @unhighlight="onUnhighlight"></sankey-view>
-      <venn-diagram-view :graph="this.graph" :totalPopulation="this.totalPopulation"></venn-diagram-view>
-      <notes-content :testPositive="this.testPositive" :totalPopulation="this.totalPopulation"></notes-content>
+    </div>
+    <bayes-rule-view :graph="this.graph" :totalPopulation="this.totalPopulation"></bayes-rule-view>
+    <br/>
+    <venn-diagram-view :graph="this.graph" :totalPopulation="this.totalPopulation"></venn-diagram-view>
+    <sankey-view :graph="this.graph" @highlight="onHighlight" @unhighlight="onUnhighlight"></sankey-view>
+    <notes-content :testPositive="this.testPositive" :totalPopulation="this.totalPopulation"></notes-content>
   </q-card>
 </template>
 
