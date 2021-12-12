@@ -6,6 +6,10 @@
 import * as d3 from 'd3'
 import * as d3Sankey from "d3-sankey";
 import diseaseConsts from './diseaseConsts.js'
+import emitter from './emitter.js'
+
+emitter.on('my-event', e => console.log('my-event', e) );
+
 
 let sankey= d3Sankey.sankey()
     .nodeWidth(15)

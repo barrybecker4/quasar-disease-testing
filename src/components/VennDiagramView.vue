@@ -7,6 +7,9 @@
 import * as d3 from 'd3'
 import diseaseConsts from './diseaseConsts.js'
 import circleUtils from './circleUtils.js'
+import emitter from './emitter.js'
+
+
 
 /** all circles will be relative to the test positive circle */
 const TEST_POS_CIRCLE_RADIUS = 230;
@@ -66,9 +69,10 @@ export default {
          const vm = this;
          svg.append("circle")
            .attr("class", diseaseConsts.HEALTHY_TEST_NEG)
-           .attr("fill-opacity", 0.3)
+           .style("fill-opacity", 0.3)
            .attr("fill", diseaseConsts.TEST_NEG_HEALTHY_COLOR)
            .on("mouseover", function(d) {
+             emitter.emit('my-event', { a: 'b' })
              vm.doHighlight(diseaseConsts.HEALTHY_TEST_NEG);
            })
            .on("mouseout", function(d) {
@@ -87,7 +91,7 @@ export default {
        addTestPositiveCircle(svg) {
          svg.append("circle")
            .attr("class", "test-positive-circle")
-           .attr("fill-opacity", 0.2)
+           .style("fill-opacity", 0.2)
            .attr("fill", diseaseConsts.POSITIVE_COLOR);
        },
 
@@ -101,7 +105,8 @@ export default {
 
          svg.append("circle")
            .attr("class", "diseased-circle")
-           .attr("fill-opacity", 0.1).attr("fill", diseaseConsts.DISEASED_COLOR)
+           .style("fill-opacity", 0.1)
+           .attr("fill", diseaseConsts.DISEASED_COLOR)
            .append("title");
        },
 
@@ -109,7 +114,7 @@ export default {
          const vm = this;
          svg.append("path")
            .attr("class", diseaseConsts.DISEASED_TEST_POS)
-           .attr("fill-opacity", 0.4)
+           .style("fill-opacity", 0.4)
            .attr("fill", "#ffaa00")
            .on("mouseover", function(d) {
              vm.doHighlight(diseaseConsts.DISEASED_TEST_POS);
@@ -121,7 +126,7 @@ export default {
 
          svg.append("path")
            .attr("class", diseaseConsts.DISEASED_TEST_NEG)
-           .attr("fill-opacity", 0.5)
+           .style("fill-opacity", 0.5)
            .attr("fill", diseaseConsts.TEST_NEG_DISEASED_COLOR)
            .on("mouseover", function(d) {
              vm.doHighlight(diseaseConsts.DISEASED_TEST_NEG);
@@ -133,7 +138,7 @@ export default {
 
          svg.append("path")
            .attr("class", diseaseConsts.HEALTHY_TEST_POS)
-           .attr("fill-opacity", 0.1)
+           .style("fill-opacity", 0.1)
            .attr("fill", "#55ee00")
            .on("mouseover", function(d) {
              vm.doHighlight(diseaseConsts.HEALTHY_TEST_POS);
@@ -271,7 +276,7 @@ export default {
                    styles.strokeWidth = 1;
                    styles.strokeOpacity = 1.0;
                    svg.select("circle.test-positive-circle").transition("tooltip").duration(DURATION)
-                      .attr("fill-opacity", 0.4)
+                      .style("fill-opacity", 0.4)
                       .style("stroke", "black")
                       .style("stroke-width", 1)
                       .style("stroke-opacity", 0.3);
@@ -319,7 +324,7 @@ export default {
                    styles.strokeWidth = 0;
                    styles.strokeOpacity = 0.0;
                    svg.select("circle.test-positive-circle").transition("tooltip").duration(DURATION)
-                       .attr("fill-opacity", 0.3)
+                       .style("fill-opacity", 0.3)
                        .style("stroke-width", 0)
                        .style("stroke-opacity", 0.0);
                    break;
@@ -328,11 +333,12 @@ export default {
                   styles.strokeWidth = 0;
                   styles.strokeOpacity = 0.0;
                   svg.select("circle.test-positive-circle").transition("tooltip").duration(DURATION)
-                      .attr("fill-opacity", 0.2)
+                      .style("fill-opacity", 0.2)
                       .style("stroke-width", 0)
                       .style("stroke-opacity", 0.0);
+                  break;
               case diseaseConsts.DISEASED_TEST_NEG:
-                  styles.fillOpacity = 0.1;
+                  styles.fillOpacity = 0.5;
                   styles.strokeWidth = 0;
                   styles.strokeOpacity = 0.0;
                   svg.select("circle.diseased-circle").transition("tooltip").duration(DURATION)
