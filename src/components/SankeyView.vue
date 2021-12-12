@@ -104,7 +104,7 @@ export default {
        sankey.size([width, height]);
        //sankey.update(this.graph);
 
-       this.addColorGradients();
+       this.addLinkColorGradients();
        this.addLinks();
        this.addNodes();
     },
@@ -189,7 +189,9 @@ export default {
       nodes.attr("transform", (d) => "translate(" + d.x0 + "," + d.y0 + ")");
 
       nodes.select("rect title")
-        .text((d) => d.name + "\n" + d.node.toLocaleString());
+        .text((d) => {
+          return d.name + "\n" + d.value.toLocaleString();
+        })
 
       nodes.select("rect")
         .attr("height", (d) => d.y1 - d.y0);
@@ -200,8 +202,7 @@ export default {
         .attr("text-anchor", (d) => d.x0 < (width / 2) ? "start" : "end");
     },
 
-    /** add link color gradients */
-    addColorGradients: function() {
+    addLinkColorGradients: function() {
 
       let grads = defs.selectAll("linearGradient")
           .data(this.graph.links, getGradientLinkId);
