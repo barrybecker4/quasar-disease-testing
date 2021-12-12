@@ -5,15 +5,23 @@ const TEST_NEG_HEALTHY = "test-negative-healthy";
 const TEST_POS = "test-positive";
 
 // The 4 interesting intersection regions
-const HEALTHY_TEST_NEG = HEALTHY + "--" + TEST_NEG_HEALTHY;
-const DISEASED_TEST_POS = DISEASED + "--" + TEST_POS;
 const DISEASED_TEST_NEG = DISEASED + "--" + TEST_NEG_DISEASED;
+const DISEASED_TEST_POS = DISEASED + "--" + TEST_POS;
 const HEALTHY_TEST_POS = HEALTHY + "--" + TEST_POS;
+const HEALTHY_TEST_NEG = HEALTHY + "--" + TEST_NEG_HEALTHY;
+
+const NAMED_INTERSECTIONS = [
+  DISEASED_TEST_NEG,
+  DISEASED_TEST_POS,
+  HEALTHY_TEST_POS,
+  HEALTHY_TEST_NEG,
+]
 
 export default  {
   DISEASED, HEALTHY,
   TEST_NEG_DISEASED, TEST_NEG_HEALTHY, TEST_POS,
   HEALTHY_TEST_NEG, DISEASED_TEST_POS, DISEASED_TEST_NEG, HEALTHY_TEST_POS,
+  NAMED_INTERSECTIONS,
   NODES: [
       { "node": 0, "id": DISEASED, "name": "Diseased" },
       { "node": 1, "id": HEALTHY, "name": "Healthy" },

@@ -128,10 +128,10 @@ export default {
 
     updateViews: function() {
       this.graph.links = [
-        {source: 0, target: 2, value: this.testNegButDiseased},
-        {source: 0, target: 3, value: this.testPositiveAndDiseased},
-        {source: 1, target: 3, value: this.testPositiveButHealthy},
-        {source: 1, target: 4, value: this.testNegAndHealthy}
+        {source: 0, target: 2, value: this.testNegButDiseased, id: diseaseConsts.DISEASED_TEST_NEG},
+        {source: 0, target: 3, value: this.testPositiveAndDiseased, id: diseaseConsts.DISEASED_TEST_POS},
+        {source: 1, target: 3, value: this.testPositiveButHealthy, id: diseaseConsts.HEALTHY_TEST_POS},
+        {source: 1, target: 4, value: this.testNegAndHealthy, id: diseaseConsts.HEALTHY_TEST_NEG},
       ];
     },
 

@@ -33,16 +33,15 @@ export default {
      },
 
      mounted() {
-         let vm = this;
          this.init();
      },
 
      watch: {
-         graph: {
-             handler(g){
-               this.render();
-             },
-             deep: true
+       graph: {
+         handler(g){
+           this.render();
+         },
+         deep: true
         }
      },
 
@@ -63,6 +62,12 @@ export default {
          this.addSubsetRegions(svg);
 
          window.addEventListener('resize', this.render);
+
+         diseaseConsts.NAMED_INTERSECTIONS.forEach(eventName => {
+           emitter.on(eventName, eventOpts => {
+             eventOpts.action === 'highlight' ? this.doHighlight(eventName) : this.doUnhighlight(eventName);
+           });
+         });
        },
 
        addPopulationCircle(svg) {
@@ -72,11 +77,10 @@ export default {
            .style("fill-opacity", 0.3)
            .attr("fill", diseaseConsts.TEST_NEG_HEALTHY_COLOR)
            .on("mouseover", function(d) {
-             emitter.emit('my-event', { a: 'b' })
-             vm.doHighlight(diseaseConsts.HEALTHY_TEST_NEG);
+             emitter.emit(diseaseConsts.HEALTHY_TEST_NEG, {action: "highlight"} );
            })
            .on("mouseout", function(d) {
-             vm.doUnhighlight(diseaseConsts.HEALTHY_TEST_NEG);
+             emitter.emit(diseaseConsts.HEALTHY_TEST_NEG, {action: "unhighlight"} );
            })
            .append("title").text("The whole population of " + this.totalPopulation.toLocaleString() +
            " people. \nThose outside the red circle are healthy");
@@ -117,10 +121,10 @@ export default {
            .style("fill-opacity", 0.4)
            .attr("fill", "#ffaa00")
            .on("mouseover", function(d) {
-             vm.doHighlight(diseaseConsts.DISEASED_TEST_POS);
+             emitter.emit(diseaseConsts.DISEASED_TEST_POS, {action: "highlight"} );
            })
            .on("mouseout", function(d) {
-             vm.doUnhighlight(diseaseConsts.DISEASED_TEST_POS);
+             emitter.emit(diseaseConsts.DISEASED_TEST_POS, {action: "unhighlight"} );
            })
            .append("title");
 
@@ -129,10 +133,10 @@ export default {
            .style("fill-opacity", 0.5)
            .attr("fill", diseaseConsts.TEST_NEG_DISEASED_COLOR)
            .on("mouseover", function(d) {
-             vm.doHighlight(diseaseConsts.DISEASED_TEST_NEG);
+             emitter.emit(diseaseConsts.DISEASED_TEST_NEG, {action: "highlight"} );
            })
            .on("mouseout", function(d) {
-             vm.doUnhighlight(diseaseConsts.DISEASED_TEST_NEG);
+             emitter.emit(diseaseConsts.DISEASED_TEST_NEG, {action: "unhighlight"} );
            })
            .append("title");
 
@@ -141,10 +145,10 @@ export default {
            .style("fill-opacity", 0.1)
            .attr("fill", "#55ee00")
            .on("mouseover", function(d) {
-             vm.doHighlight(diseaseConsts.HEALTHY_TEST_POS);
+             emitter.emit(diseaseConsts.HEALTHY_TEST_POS, {action: "highlight"} );
            })
            .on("mouseout", function(d) {
-             vm.doUnhighlight(diseaseConsts.HEALTHY_TEST_POS);
+             emitter.emit(diseaseConsts.HEALTHY_TEST_POS, {action: "unhighlight"} );
            })
            .append("title");
 
@@ -198,7 +202,7 @@ export default {
          let diseasedTop = diseasedCenterY - diseasedRad;
          svg.selectAll("text.venn-label.positive")
               .attr("x", centerX - 110)
-              .attr("y", 0.6 * chartHeight);
+              .attr("y", 0.54 * chartHeight);
          svg.selectAll("text.venn-label.diseased")
               .attr("x", centerX + 30)
               .attr("y", diseasedTop - 5);

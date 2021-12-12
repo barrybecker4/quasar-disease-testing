@@ -8,8 +8,6 @@ import * as d3Sankey from "d3-sankey";
 import diseaseConsts from './diseaseConsts.js'
 import emitter from './emitter.js'
 
-emitter.on('my-event', e => console.log('my-event', e) );
-
 
 let sankey= d3Sankey.sankey()
     .nodeWidth(15)
@@ -43,18 +41,36 @@ export default {
   props: {
     graph: {
       type: Object,
-      default: () => {}
+      default: () => {
+      }
     },
   },
 
   mounted() {
-    //let vm = this;
-    this.init();
+    let svg = d3.selectAll("#sankey-view").append("svg")
+      .append("g")
+      .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+    defs = svg.append("defs");
+    linksEl = svg.append("g");
+    nodesEl = svg.append("g");
+
+    window.addEventListener('resize', this.render);
+
+    setTimeout(function () {
+      window.dispatchEvent(new Event('resize'));
+    }, 10);
+
+    diseaseConsts.NAMED_INTERSECTIONS.forEach(eventName => {
+      emitter.on(eventName, eventOpts => {
+        eventOpts.action === 'highlight' ? this.doHighlight(eventName, eventOpts) : this.doUnhighlight(eventName, eventOpts);
+      });
+    });
   },
 
   watch: {
     graphLinks: {
-      //immediate: true,
       handler(value) {
         this.render();
       }
@@ -62,88 +78,66 @@ export default {
   },
 
   computed: {
-    graphLinks: function() {
+    graphLinks: function () {
       return this.graph.links;
     }
   },
 
   methods: {
-    /** Add the initial svg structure */
-    init: function() {
-       let svg = d3.selectAll("#sankey-view").append("svg")
-           .append("g")
-           .attr("transform",
-               "translate(" + margin.left + "," + margin.top + ")");
-
-       defs = svg.append("defs");
-       linksEl = svg.append("g");
-       nodesEl = svg.append("g");
-
-       window.addEventListener('resize', this.render);
-
-       setTimeout(function() {
-         window.dispatchEvent(new Event('resize'));
-       }, 10);
-
-    },
 
     /** update the sankey diagram */
-    render: function() {
-       let el = this.$el;
-       let chartWidth = el.clientWidth;
-       let chartHeight = el.clientHeight;
-       width = chartWidth - margin.left - margin.right;
-       height = chartHeight - margin.top - margin.bottom;
+    render() {
+      let el = this.$el;
+      let chartWidth = el.clientWidth;
+      let chartHeight = el.clientHeight;
+      width = chartWidth - margin.left - margin.right;
+      height = chartHeight - margin.top - margin.bottom;
 
-       // append the svg canvas to the page
-       let svg = d3.select("#" + el.id + " svg")
-           .attr("width", chartWidth)
-           .attr("height", chartHeight);
+      // append the svg canvas to the page
+      let svg = d3.select("#" + el.id + " svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight);
 
-       sankey(this.graph);
-       sankey.size([width, height]);
-       //sankey.update(this.graph);
+      sankey(this.graph);
+      sankey.size([width, height]);
+      //sankey.update(this.graph);
 
-       this.addLinkColorGradients();
-       this.addLinks();
-       this.addNodes();
+      this.addLinkColorGradients();
+      this.addLinks();
+      this.addNodes();
     },
 
-    addLinks: function() {
+    addLinks() {
       links = linksEl.selectAll(".link").data(this.graph.links, getGradientLinkId);
 
-      let linkEnter = links.enter()
-          .append("path")
-          .attr("class", function(d) { return "link " + getLinkId(d); })
-          .style("stroke-opacity", 0.3)
-          .on("mouseover", function(d) {
-            d3.select(this).transition("tooltip").duration(DURATION)
-              .style("stroke-opacity", function(d) { return d.target.node == "4" ? 0.45 : 0.7; });
-          })
-          .on("mouseout", function(d) {
-            d3.select(this).transition("tooltip").duration(DURATION)
-              .style("stroke-opacity", 0.3);
-           })
-          .append("title");
+      links.enter()
+        .append("path")
+        .attr("class", function (d) {
+          return "link " + getLinkId(d);
+        })
+        .style("stroke-opacity", 0.3)
+        .on("mouseover", d => emitter.emit(d.id, { action: "highlight" }))
+        .on("mouseout", d => emitter.emit(d.id, { action: "unhighlight" }))
+        .append("title");
 
       links
-          .attr("d", d3Sankey.sankeyLinkHorizontal())
-          .style("stroke", function(d) {
-              return "url(#" + getGradientLinkId(d) + ")";
-          })
-          .style("stroke-width", function (d) {
-              return Math.max(1, d.width);
-          });
+        .attr("d", d3Sankey.sankeyLinkHorizontal())
+        .style("stroke", function (d) {
+          return "url(#" + getGradientLinkId(d) + ")";
+        })
+        .style("stroke-width", function (d) {
+          return Math.max(1, d.width);
+        });
 
       // add the link titles
       links.selectAll("path title")
-          .text(function (d) {
-              let data = d3.select(this.parentNode).datum();
-              return d.source.name + " -> " + d.target.name + " (" + data.value.toLocaleString() + " people)";
-          });
+        .text(function (d) {
+          let data = d3.select(this.parentNode).datum();
+          return d.source.name + " -> " + d.target.name + " (" + data.value.toLocaleString() + " people)";
+        });
     },
 
-    addNodes: function() {
+    addNodes: function () {
       let nodes = nodesEl.selectAll(".node").data(this.graph.nodes);
       let nodeEnter = nodes.enter();
 
@@ -162,12 +156,12 @@ export default {
         .style("stroke", function (d) {
           return d3.rgb(d.color).darker(1);
         })
-        .on("mouseover", function(d) {
+        .on("mouseover", function (d) {
           d3.select(this).transition("tooltip").duration(DURATION)
             .style("fill-opacity", 0.99)
             .style("stroke-width", 2);
         })
-        .on("mouseout", function(d) {
+        .on("mouseout", function (d) {
           d3.select(this).transition("tooltip").duration(DURATION)
             .style("fill-opacity", 0.5)
             .style("stroke-width", 1);
@@ -186,47 +180,64 @@ export default {
     },
 
     updateNodeGeometry(nodes) {
-      nodes.attr("transform", (d) => "translate(" + d.x0 + "," + d.y0 + ")");
+      nodes.attr("transform", d => "translate(" + d.x0 + "," + d.y0 + ")");
 
       nodes.select("rect title")
-        .text((d) => {
+        .text(d => {
           return d.name + "\n" + d.value.toLocaleString();
         })
 
       nodes.select("rect")
-        .attr("height", (d) => d.y1 - d.y0);
+        .attr("height", d => d.y1 - d.y0);
 
       nodes.select("text")
-        .attr("y", (d) => (d.y1 - d.y0) / 2)
-        .attr("x", (d) => d.x0 < (width / 2) ? NODE_TEXT_OFFSET + sankey.nodeWidth() : -NODE_TEXT_OFFSET)
-        .attr("text-anchor", (d) => d.x0 < (width / 2) ? "start" : "end");
+        .attr("y", d => (d.y1 - d.y0) / 2)
+        .attr("x", d => d.x0 < (width / 2) ? NODE_TEXT_OFFSET + sankey.nodeWidth() : -NODE_TEXT_OFFSET)
+        .attr("text-anchor", d => d.x0 < (width / 2) ? "start" : "end");
     },
 
-    addLinkColorGradients: function() {
+    addLinkColorGradients: function () {
 
       let grads = defs.selectAll("linearGradient")
-          .data(this.graph.links, getGradientLinkId);
+        .data(this.graph.links, getGradientLinkId);
 
       grads.enter().append("linearGradient")
-          .attr("id", getGradientLinkId)
-          .attr("gradientUnits", "userSpaceOnUse");
+        .attr("id", getGradientLinkId)
+        .attr("gradientUnits", "userSpaceOnUse");
 
       grads.html("") // erase any existing <stop> elements on update
-          .append("stop")
-          .attr("offset", "0%")
-          .attr("stop-color", function (d) {
-              return nodeColor((+d.source.x0 <= +d.target.x0) ? d.source : d.target);
-          });
+        .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", function (d) {
+          return nodeColor((+d.source.x0 <= +d.target.x0) ? d.source : d.target);
+        });
 
       grads.append("stop")
-          .attr("offset", "100%")
-          .attr("stop-color", function (d) {
-              return nodeColor((+d.source.x0 > +d.target.x0) ? d.source : d.target)
-          });
+        .attr("offset", "100%")
+        .attr("stop-color", function (d) {
+          return nodeColor((+d.source.x0 > +d.target.x0) ? d.source : d.target)
+        });
     },
-  },
+
+    doHighlight: function(eventName) {
+      const svg = getSvg();
+      svg.select(".link." + eventName).transition("tooltip").duration(DURATION)
+        .style("stroke-opacity", () => {
+          return eventName === diseaseConsts.HEALTHY_TEST_NEG ? 0.45 : 0.7;
+        });
+    },
+
+    doUnhighlight: function(eventName) {
+      const svg = getSvg();
+      svg.select(".link." + eventName).transition("tooltip").duration(DURATION)
+        .style("stroke-opacity", 0.3);
+    },
+  }
 }
 
+function getSvg() {
+  return d3.select("#sankey-view svg");
+}
 
 function getLinkId(d) {
    return d.source.id + "--" + d.target.id;
