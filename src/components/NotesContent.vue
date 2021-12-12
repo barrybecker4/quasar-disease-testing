@@ -26,9 +26,6 @@
 import diseaseConsts from './diseaseConsts.js'
 
 export default {
-  setup () {
-    return {}
-  },
 
   props: {
     testPositive: {

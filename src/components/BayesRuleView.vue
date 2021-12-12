@@ -31,10 +31,6 @@ import diseaseConsts from './diseaseConsts.js';
 
 export default {
 
-  setup () {
-    return {}
-  },
-
   props: {
     graph: {
       type: Object, // Object or array defaults must be returned from a factory function

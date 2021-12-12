@@ -38,10 +38,6 @@ export default {
       NotesContent,
   },
 
-  setup() {
-    return {}
-  },
-
   props: {
     totalPopulation: { //  a number in the range [100, 1,000,000,000,000]
       type: Number,

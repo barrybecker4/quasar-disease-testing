@@ -36,10 +36,6 @@ let colorScale = d3.scale.ordinal()
 
 export default {
 
-  setup () {
-    return {};
-  },
-
   props: {
     graph: {
       type: Object,

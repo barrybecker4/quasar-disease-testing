@@ -18,10 +18,6 @@ let margin = {top: 10, bottom: 10, left: 0};
 
 export default {
 
-  setup () {
-    return {}
-  },
-
   props: {
      graph: {
        type: Object, // Object or array defaults must be returned from a factory function
@@ -155,108 +151,99 @@ export default {
        /** update the Venn diagram */
        render: function() {
 
-          let el = this.$el;
-          let chartWidth = el.clientWidth;
-          let chartHeight = el.clientHeight;
-          let chartWidthD2 = chartWidth / 2;
-          let chartHeightD2 = chartHeight / 2 + 30;
+         const el = this.$el;
+         const chartWidth = el.clientWidth;
+         const chartHeight = el.clientHeight;
+         const chartWidthD2 = chartWidth / 2;
+         const chartHeightD2 = chartHeight / 2 + 30;
 
-          let svg = d3.select("#" + el.id + " svg")
+         const svg = d3.select("#" + el.id + " svg")
               .attr("width", chartWidth)
               .attr("height", chartHeight);
 
-          let numPositiveAndDiseased = this.graph.links[1].value;
-          let numPositiveAndHealthy =  this.graph.links[2].value;
-          let testNegButDiseased = Math.round(this.graph.links[0].value);
-          let numDiseased = testNegButDiseased + numPositiveAndDiseased;
-          let numPositive = numPositiveAndDiseased + numPositiveAndHealthy;
+         const numPositiveAndDiseased = this.graph.links[1].value;
+         const numPositiveAndHealthy =  this.graph.links[2].value;
+         const testNegButDiseased = Math.round(this.graph.links[0].value);
+         const numDiseased = testNegButDiseased + numPositiveAndDiseased;
+         const numPositive = numPositiveAndDiseased + numPositiveAndHealthy;
 
-          let testPositiveRad = TEST_POS_CIRCLE_RADIUS;
-          let scaleFactor = Math.sqrt(this.totalPopulation / numPositive);
-          let diseasedRad = testPositiveRad * Math.sqrt(numDiseased / numPositive);
-          let popRad = testPositiveRad * scaleFactor;
-          let popArea = Math.PI * popRad * popRad;
-          let diseaseArea = Math.PI * diseasedRad * diseasedRad;
-          let overlap = (numPositiveAndDiseased / numDiseased) * diseaseArea;
+         const testPositiveRad = TEST_POS_CIRCLE_RADIUS;
+         const scaleFactor = Math.sqrt(this.totalPopulation / numPositive);
+         const diseasedRad = testPositiveRad * Math.sqrt(numDiseased / numPositive);
+         const popRad = testPositiveRad * scaleFactor;
+         const diseaseArea = Math.PI * diseasedRad * diseasedRad;
+         const overlap = (numPositiveAndDiseased / numDiseased) * diseaseArea;
 
-          /*console.log("diseaseArea = "+ diseaseArea + " overlap="+ overlap
-              + " numPosAndD="+ numPositiveAndDiseased + " numDis="+ numDiseased);
-          console.log("diseaseArea= " + diseaseArea + " popArea= "+ popArea
-              + " numDiseased= " + numDiseased + " pop= " + this.totalPopulation
-              + " rat1=" + diseaseArea/popArea + " rat2="+ numDiseased/this.totalPopulation);
-          console.log("numPositiveAndDiseased = " + numPositiveAndDiseased + " numDiseased = "
-           + numDiseased + " overlap="+ overlap);*/
-
-          let distance = circleUtils.findCircleSeparation({
-              radiusA: testPositiveRad,
-              radiusB: diseasedRad,
-              overlap: overlap
+         const distance = circleUtils.findCircleSeparation({
+            radiusA: testPositiveRad,
+            radiusB: diseasedRad,
+            overlap: overlap
           });
 
-          let centerX = chartWidthD2 + testPositiveRad - 180;
-          let diseasedCenterY = chartHeightD2 - distance;
-          let popCircleCenterX = Math.max(chartWidthD2 - popRad, 0) + popRad + 10;
+         const  centerX = chartWidthD2 + testPositiveRad - 180;
+         const diseasedCenterY = chartHeightD2 - distance;
+         const popCircleCenterX = Math.max(chartWidthD2 - popRad, 0) + popRad + 10;
 
-          svg.selectAll("circle.healthy--test-negative-healthy")
-              .attr("cx", popCircleCenterX)
-              .attr("cy", chartHeightD2)
-              .attr("r", popRad);
+         svg.selectAll("circle.healthy--test-negative-healthy")
+            .attr("cx", popCircleCenterX)
+            .attr("cy", chartHeightD2)
+            .attr("r", popRad);
 
-          const rotation = 30 + 60 * (1.0 - TEST_POS_CIRCLE_RADIUS / popRad);
-          let diseasedTop = diseasedCenterY - diseasedRad;
-          svg.selectAll("text.venn-label.positive")
+         const rotation = 30 + 60 * (1.0 - TEST_POS_CIRCLE_RADIUS / popRad);
+         let diseasedTop = diseasedCenterY - diseasedRad;
+         svg.selectAll("text.venn-label.positive")
               .attr("x", centerX - 110)
-              .attr("y", 0.7 * chartHeight);
-          svg.selectAll("text.venn-label.diseased")
+              .attr("y", 0.6 * chartHeight);
+         svg.selectAll("text.venn-label.diseased")
               .attr("x", centerX + 30)
               .attr("y", diseasedTop - 5);
 
-          svg.selectAll("line.venn-line.diseased")
+         svg.selectAll("line.venn-line.diseased")
               .attr("x1", centerX)
               .attr("y1", diseasedTop + 1)
               .attr("x2", centerX + 29)
               .attr("y2", diseasedTop - 10);
-          svg.selectAll("text.venn-label.population")
+         svg.selectAll("text.venn-label.population")
               .attr("transform", "rotate(" + -rotation + " " + POP_LABEL_X + " " + POP_LABEL_Y + ")");
 
-          svg.selectAll("circle.test-positive-circle")
+         svg.selectAll("circle.test-positive-circle")
               .attr("cx", centerX)
               .attr("cy", chartHeightD2)
               .attr("r", testPositiveRad);
 
-          svg.selectAll("circle.diseased-circle")
+         svg.selectAll("circle.diseased-circle")
               .attr("cx", centerX)
               .attr("cy", diseasedCenterY)
               .attr("r", diseasedRad);
 
-          // Draw paths for 2 halves of disease circle - the part in the intersection, and outside of it.
-          // See https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
-          let pdPath = svg.selectAll("path.diseased--test-positive");
-          let pctDiseasedGivenPositive = diseaseConsts.format(100 * numPositiveAndDiseased / numPositive, 2);
-          pdPath.attr("d", this.pathFunc(centerX, chartHeightD2, testPositiveRad,
-                  centerX, diseasedCenterY, diseasedRad, 0, 1,   1, 1));
-          pdPath.select("title").text(numPositiveAndDiseased.toLocaleString() +
+         // Draw paths for 2 halves of disease circle - the part in the intersection, and outside of it.
+         // See https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+         const pdPath = svg.selectAll("path.diseased--test-positive");
+         const pctDiseasedGivenPositive = diseaseConsts.format(100 * numPositiveAndDiseased / numPositive, 2);
+         pdPath.attr("d", this.pathFunc(centerX, chartHeightD2, testPositiveRad,
+              centerX, diseasedCenterY, diseasedRad, 0, 1,   1, 1));
+         pdPath.select("title").text(numPositiveAndDiseased.toLocaleString() +
               " (" + pctDiseasedGivenPositive + "%) " + " of the " +
               numPositive.toLocaleString() +
               " that tested positive\nactually have the disease.");
 
-          let ndPath = svg.selectAll("path.diseased--test-negative-diseased");
-          ndPath.attr("d", this.pathFunc(centerX, chartHeightD2, testPositiveRad,
-              centerX, diseasedCenterY, diseasedRad, 0, 1,  0, 0));
-          ndPath.select("title").text(testNegButDiseased.toLocaleString() + " out of "
+         const ndPath = svg.selectAll("path.diseased--test-negative-diseased");
+         ndPath.attr("d", this.pathFunc(centerX, chartHeightD2, testPositiveRad,
+              centerX, diseasedCenterY, diseasedRad, 0, 1, 0,0));
+         ndPath.select("title").text(testNegButDiseased.toLocaleString() + " out of "
               + numDiseased.toLocaleString() + "\nwith the disease test negative.");
 
-          let phPath = svg.selectAll("path.healthy--test-positive");
-          phPath.attr("d", this.pathFunc(centerX, chartHeightD2, testPositiveRad,
+         const phPath = svg.selectAll("path.healthy--test-positive");
+         phPath.attr("d", this.pathFunc(centerX, chartHeightD2, testPositiveRad,
               centerX, diseasedCenterY, diseasedRad, 1, 0,  1, 1));
-          phPath.select("title")
+         phPath.select("title")
               .text(numPositiveAndHealthy.toLocaleString()  + " are healthy out of the\n" +
                   numPositive.toLocaleString() + " that tested positive.");
-        },
+       },
 
        pathFunc: function(x1, y1, rad1, x2, y2, rad2, largeArcFlag1, sweepFlag1, largeArcFlag2, sweepFlag2) {
          let interPoints = circleUtils.circleIntersection(x1, y1, rad1,  x2, y2, rad2);
-         if (interPoints[0] == interPoints[2])
+         if (interPoints[0] === interPoints[2])
             return "M0,0";
          else {
             let rotation = 0;
@@ -341,10 +328,11 @@ export default {
                   styles.strokeWidth = 0;
                   styles.strokeOpacity = 0.0;
                   svg.select("circle.test-positive-circle").transition("tooltip").duration(DURATION)
+                      .attr("fill-opacity", 0.2)
                       .style("stroke-width", 0)
                       .style("stroke-opacity", 0.0);
               case diseaseConsts.DISEASED_TEST_NEG:
-                  styles.fillOpacity = 0.5;
+                  styles.fillOpacity = 0.1;
                   styles.strokeWidth = 0;
                   styles.strokeOpacity = 0.0;
                   svg.select("circle.diseased-circle").transition("tooltip").duration(DURATION)
