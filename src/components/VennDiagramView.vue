@@ -9,10 +9,10 @@ import diseaseConsts from './diseaseConsts.js'
 import circleUtils from './circleUtils.js'
 
 /** all circles will be relative to the test positive circle */
-const TEST_POS_CIRCLE_RADIUS = 250;
+const TEST_POS_CIRCLE_RADIUS = 230;
 const DURATION = 300;
-const POP_LABEL_X = 100;
-const POP_LABEL_Y = 260;
+const POP_LABEL_X = 50;
+const POP_LABEL_Y = 240;
 
 let margin = {top: 10, bottom: 10, left: 0};
 
@@ -51,90 +51,106 @@ export default {
 
        /** Add the initial svg structure */
        init: function() {
-          // append the svg canvas to the page
-          let rootSvg = d3.selectAll("#" + this.$el.id).append("svg");
-          let vm = this;
 
-          let svg = rootSvg.append("g")
-              .attr("transform",
-                  "translate(" + margin.left + "," + margin.top + ")");
+         const rootSvg = d3.selectAll("#" + this.$el.id).append("svg");
 
-          svg.append("circle")
-              .attr("class", diseaseConsts.HEALTHY_TEST_NEG)
-              .attr("fill-opacity", 0.3)
-              .attr("fill", diseaseConsts.TEST_NEG_HEALTHY_COLOR)
-              .on("mouseover", function(d) {
-                vm.doHighlight(diseaseConsts.HEALTHY_TEST_NEG);
-              })
-              .on("mouseout", function(d) {
-                vm.doUnhighlight(diseaseConsts.HEALTHY_TEST_NEG);
-              })
-              .append("title").text("The whole population of " + this.totalPopulation.toLocaleString() +
-                  " people. \nThose outside the red circle are healthy");
-          svg.append("text")
-              .attr("class", "venn-label population")
-              .attr("x", POP_LABEL_X)
-              .attr("y", POP_LABEL_Y)
-              .text("Whole Population");
+         const svg = rootSvg.append("g")
+           .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
 
-          svg.append("circle")
-              .attr("class", "test-positive-circle")
-              .attr("fill-opacity", 0.2)
-              .attr("fill", diseaseConsts.POSITIVE_COLOR);
+         this.addPopulationCircle(svg);
+         this.addTestPositiveCircle(svg);
+         this.addDiseasedCircle(svg);
+         this.addSubsetRegions(svg);
 
-          svg.append("text")
-              .attr("class", "venn-label diseased")
-              .text("Diseased");
-          svg.append("line")
-              .attr("class", "venn-line diseased");
+         window.addEventListener('resize', this.render);
+       },
 
-          svg.append("circle")
-              .attr("class", "diseased-circle")
-              .attr("fill-opacity", 0.1).attr("fill", diseaseConsts.DISEASED_COLOR)
-              .append("title");
+       addPopulationCircle(svg) {
+         const vm = this;
+         svg.append("circle")
+           .attr("class", diseaseConsts.HEALTHY_TEST_NEG)
+           .attr("fill-opacity", 0.3)
+           .attr("fill", diseaseConsts.TEST_NEG_HEALTHY_COLOR)
+           .on("mouseover", function(d) {
+             vm.doHighlight(diseaseConsts.HEALTHY_TEST_NEG);
+           })
+           .on("mouseout", function(d) {
+             vm.doUnhighlight(diseaseConsts.HEALTHY_TEST_NEG);
+           })
+           .append("title").text("The whole population of " + this.totalPopulation.toLocaleString() +
+           " people. \nThose outside the red circle are healthy");
 
-          svg.append("path")
-              .attr("class", diseaseConsts.DISEASED_TEST_POS)
-              .attr("fill-opacity", 0.4)
-              .attr("fill", "#ffaa00")
-              .on("mouseover", function(d) {
-                vm.doHighlight(diseaseConsts.DISEASED_TEST_POS);
-              })
-              .on("mouseout", function(d) {
-                vm.doUnhighlight(diseaseConsts.DISEASED_TEST_POS);
-              })
-              .append("title");
+         svg.append("text")
+           .attr("class", "venn-label population")
+           .attr("x", POP_LABEL_X)
+           .attr("y", POP_LABEL_Y)
+           .text("Whole Population");
+       },
 
-          svg.append("path")
-              .attr("class", diseaseConsts.DISEASED_TEST_NEG)
-              .attr("fill-opacity", 0.5)
-              .attr("fill", diseaseConsts.TEST_NEG_DISEASED_COLOR)
-              .on("mouseover", function(d) {
-                vm.doHighlight(diseaseConsts.DISEASED_TEST_NEG);
-              })
-              .on("mouseout", function(d) {
-                vm.doUnhighlight(diseaseConsts.DISEASED_TEST_NEG);
-              })
-              .append("title");
+       addTestPositiveCircle(svg) {
+         svg.append("circle")
+           .attr("class", "test-positive-circle")
+           .attr("fill-opacity", 0.2)
+           .attr("fill", diseaseConsts.POSITIVE_COLOR);
+       },
 
-          svg.append("path")
-              .attr("class", diseaseConsts.HEALTHY_TEST_POS)
-              .attr("fill-opacity", 0.1)
-              .attr("fill", "#55ee00")
-              .on("mouseover", function(d) {
-                vm.doHighlight(diseaseConsts.HEALTHY_TEST_POS);
-              })
-              .on("mouseout", function(d) {
-                vm.doUnhighlight(diseaseConsts.HEALTHY_TEST_POS);
-              })
-              .append("title");
+       addDiseasedCircle(svg) {
+         svg.append("text")
+           .attr("class", "venn-label diseased")
+           .text("Diseased");
 
-          svg.append("text")
-              .attr("class", "venn-label positive")
-              .text("Tested Positive");
+         svg.append("line")
+           .attr("class", "venn-line diseased");
 
-          window.addEventListener('resize', this.render);
-        },
+         svg.append("circle")
+           .attr("class", "diseased-circle")
+           .attr("fill-opacity", 0.1).attr("fill", diseaseConsts.DISEASED_COLOR)
+           .append("title");
+       },
+
+       addSubsetRegions(svg) {
+         const vm = this;
+         svg.append("path")
+           .attr("class", diseaseConsts.DISEASED_TEST_POS)
+           .attr("fill-opacity", 0.4)
+           .attr("fill", "#ffaa00")
+           .on("mouseover", function(d) {
+             vm.doHighlight(diseaseConsts.DISEASED_TEST_POS);
+           })
+           .on("mouseout", function(d) {
+             vm.doUnhighlight(diseaseConsts.DISEASED_TEST_POS);
+           })
+           .append("title");
+
+         svg.append("path")
+           .attr("class", diseaseConsts.DISEASED_TEST_NEG)
+           .attr("fill-opacity", 0.5)
+           .attr("fill", diseaseConsts.TEST_NEG_DISEASED_COLOR)
+           .on("mouseover", function(d) {
+             vm.doHighlight(diseaseConsts.DISEASED_TEST_NEG);
+           })
+           .on("mouseout", function(d) {
+             vm.doUnhighlight(diseaseConsts.DISEASED_TEST_NEG);
+           })
+           .append("title");
+
+         svg.append("path")
+           .attr("class", diseaseConsts.HEALTHY_TEST_POS)
+           .attr("fill-opacity", 0.1)
+           .attr("fill", "#55ee00")
+           .on("mouseover", function(d) {
+             vm.doHighlight(diseaseConsts.HEALTHY_TEST_POS);
+           })
+           .on("mouseout", function(d) {
+             vm.doUnhighlight(diseaseConsts.HEALTHY_TEST_POS);
+           })
+           .append("title");
+
+         svg.append("text")
+           .attr("class", "venn-label positive")
+           .text("Tested Positive");
+       },
 
        /** update the Venn diagram */
        render: function() {
@@ -186,10 +202,10 @@ export default {
               .attr("cy", chartHeightD2)
               .attr("r", popRad);
 
-          let rot = 180 / Math.PI * Math.asin(popRad / popCircleCenterX);
+          const rotation = 30 + 60 * (1.0 - TEST_POS_CIRCLE_RADIUS / popRad);
           let diseasedTop = diseasedCenterY - diseasedRad;
           svg.selectAll("text.venn-label.positive")
-              .attr("x", centerX - 30)
+              .attr("x", centerX - 110)
               .attr("y", 0.7 * chartHeight);
           svg.selectAll("text.venn-label.diseased")
               .attr("x", centerX + 30)
@@ -201,7 +217,7 @@ export default {
               .attr("x2", centerX + 29)
               .attr("y2", diseasedTop - 10);
           svg.selectAll("text.venn-label.population")
-              .attr("transform", "rotate(" + -rot + " " + POP_LABEL_X + " " + POP_LABEL_Y + ")");
+              .attr("transform", "rotate(" + -rotation + " " + POP_LABEL_X + " " + POP_LABEL_Y + ")");
 
           svg.selectAll("circle.test-positive-circle")
               .attr("cx", centerX)
@@ -352,12 +368,11 @@ function getSvg() {
 }
 </script>
 
-<style scoped>
+<style>
 
   .venn-label {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: bold;
-    /* want the text to appear to the right of the node */
   }
 
   .venn-label.population {
@@ -371,22 +386,9 @@ function getSvg() {
   }
 
   .venn-line {
-    stroke: #333333;
+    stroke: #444444;
     stroke-width: 1px;
     stroke-opacity: 0.7;
-  }
-
-  .venntooltip {
-    position: absolute;
-    text-align: center;
-    width: 128px;
-    height: 16px;
-    background: #333;
-    color: #ddd;
-    padding: 2px;
-    border: 0;
-    border-radius: 8px;
-    opacity: 0;
   }
 
 </style>

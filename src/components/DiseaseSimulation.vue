@@ -171,12 +171,12 @@ export default {
   #sankey-view {
     float: left;
     width: 50%;
-    height: 650px;
+    height: 610px;
   }
   #venn-diagram-view {
     float: right;
     width: 50%;
-    height: 650px;
+    height: 610px;
   }
 
   #notes {
