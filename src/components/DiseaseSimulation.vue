@@ -183,6 +183,7 @@ export default {
     float: left;
     width: 100%;
   }
+
 </style>
 
 <style>

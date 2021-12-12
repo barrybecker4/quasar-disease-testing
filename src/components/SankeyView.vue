@@ -16,6 +16,7 @@ let width, height;
 let links;
 let margin = {top: 10, right: 10, bottom: 10, left: 10};
 const DURATION = 300;
+const NODE_TEXT_OFFSET = 6;
 
 let colorScale = d3.scale.ordinal()
     .range([
@@ -52,7 +53,12 @@ export default {
   },
 
   watch: {
-    graphLinks(value) { this.render() },
+    graphLinks: {
+      //immediate: true,
+      handler(value) {
+        this.render();
+      }
+    },
   },
 
   computed: {
@@ -74,6 +80,11 @@ export default {
        nodesEl = svg.append("g");
 
        window.addEventListener('resize', this.render);
+
+       setTimeout(function() {
+         window.dispatchEvent(new Event('resize'));
+       }, 10);
+
     },
 
     /** update the sankey diagram */
@@ -99,7 +110,6 @@ export default {
     },
 
     addLinks: function() {
-      let vm = this;
       links = linksEl.selectAll(".link").data(this.graph.links, getGradientLinkId);
 
       let linkEnter = links.enter()
@@ -134,66 +144,60 @@ export default {
     },
 
     addNodes: function() {
-      console.log("rendinger nodes " + this.graph.nodes);
       let nodes = nodesEl.selectAll(".node").data(this.graph.nodes);
       let nodeEnter = nodes.enter();
 
+      this.addNodeGeometry(nodeEnter);
+      this.updateNodeGeometry(nodes);
+    },
+
+    addNodeGeometry(nodeEnter) {
       let nodeG = nodeEnter.append("g")
-          .attr("class", "node");
+        .attr("class", "node");
 
-      nodes.attr("transform", function (d) {
-          return "translate(" + d.x0 + "," + d.y0 + ")";
-      });
-
-      // add the rectangles for the nodes
       nodeG.append("rect")
-          .attr("width", sankey.nodeWidth())
-          .style("fill", nodeColor)
-          .style("fill-opacity", 0.5)
-          .style("stroke", function (d) {
-              return d3.rgb(d.color).darker(1);
-          })
-          .on("mouseover", function(d) {
-             d3.select(this).transition("tooltip").duration(DURATION)
-                 .style("fill-opacity", 0.99)
-                 .style("stroke-width", 2);
-             })
-          .on("mouseout", function(d) {
-             d3.select(this).transition("tooltip").duration(DURATION)
-                 .style("fill-opacity", 0.5)
-               .style("stroke-width", 1);
-             })
-          .append("title");
-      nodes.select("rect title")
-          .text(function (d) {
-              return d.name + "\n" + d.node.toLocaleString();
-          });
-
-      nodes.select("rect")
-          .attr("height", function (d) {
-              const ht = Math.abs(d.y1 - d.y0);
-              return ht;
-          });
+        .attr("width", sankey.nodeWidth())
+        .style("fill", nodeColor)
+        .style("fill-opacity", 0.5)
+        .style("stroke", function (d) {
+          return d3.rgb(d.color).darker(1);
+        })
+        .on("mouseover", function(d) {
+          d3.select(this).transition("tooltip").duration(DURATION)
+            .style("fill-opacity", 0.99)
+            .style("stroke-width", 2);
+        })
+        .on("mouseout", function(d) {
+          d3.select(this).transition("tooltip").duration(DURATION)
+            .style("fill-opacity", 0.5)
+            .style("stroke-width", 1);
+        })
+        .append("title");
 
       // add in the title for the nodes
       nodeG.append("text")
-          .attr("x", -6)
-          .attr("dy", ".35em")
-          .attr("text-anchor", "end")
-          .attr("transform", null)
-          .text(function (d) {
-              return d.name;
-          })
-          .filter(function (d) {
-              return d.x < width / 2;
-          })
-          .attr("x", 6 + sankey.nodeWidth())
-          .attr("text-anchor", "start");
+
+        .attr("dy", ".35em")
+        .attr("text-anchor", "end")
+        .attr("transform", null)
+        .text(function (d) {
+          return d.name;
+        });
+    },
+
+    updateNodeGeometry(nodes) {
+      nodes.attr("transform", (d) => "translate(" + d.x0 + "," + d.y0 + ")");
+
+      nodes.select("rect title")
+        .text((d) => d.name + "\n" + d.node.toLocaleString());
+
+      nodes.select("rect")
+        .attr("height", (d) => d.y1 - d.y0);
 
       nodes.select("text")
-          .attr("y", function (d) {
-              return (d.y1 - d.y0) / 2;
-          });
+        .attr("y", (d) => (d.y1 - d.y0) / 2)
+        .attr("x", (d) => d.x0 < (width / 2) ? NODE_TEXT_OFFSET + sankey.nodeWidth() : -NODE_TEXT_OFFSET)
+        .attr("text-anchor", (d) => d.x0 < (width / 2) ? "start" : "end");
     },
 
     /** add link color gradients */

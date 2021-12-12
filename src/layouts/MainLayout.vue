@@ -29,10 +29,7 @@
     },
 
     setup () {
-      return {
-        toggleLeftDrawer () {
-        }
-      }
+      return {}
     }
   })
 </script>

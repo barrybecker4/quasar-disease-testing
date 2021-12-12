@@ -357,6 +357,7 @@ function getSvg() {
   .venn-label {
     font-size: 28px;
     font-weight: bold;
+    /* want the text to appear to the right of the node */
   }
 
   .venn-label.population {
